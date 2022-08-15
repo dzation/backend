@@ -4,6 +4,8 @@ import {
   validateAddChapter,
   validateAddContent,
   validateAddNewCourse,
+  validateValideChapter,
+  validateValideContent,
   validateValideCourse,
 } from "./middleware";
 
@@ -60,6 +62,30 @@ export default class Http extends HttpPresenter {
 
       res.json({ content });
     });
+
+    this.route.post(
+      "/chapter/delete",
+      validateValideChapter,
+      async (req, res) => {
+        const deletedChapter = await this.serivce.deleteChapter(
+          req.body.chapter
+        );
+
+        res.json({ deleted: { chapter: deletedChapter } });
+      }
+    );
+
+    this.route.post(
+      "/content/delete",
+      validateValideContent,
+      async (req, res) => {
+        const deletedContent = await this.serivce.deleteContent(
+          req.body.content
+        );
+
+        res.json({ deleted: { content: deletedContent } });
+      }
+    );
 
     return this.route;
   }

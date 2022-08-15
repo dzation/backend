@@ -39,5 +39,7 @@ export default class ChapterRepository {
     ];
   }
 
-  async deleteChapter(chapter: Chapter) {}
+  async deleteChapter(chapter: Chapter) {
+    // todo delete all nested contents
+  }
 }

@@ -4,6 +4,8 @@ import {
   UnableToAddChapter,
   UnableToAddContent,
   UnableToAddCourse,
+  UnableToDeleteChapter,
+  UnableToDeleteContent,
   UnableToDeleteCourse,
 } from "./config/errors";
 import Chapter, { ChapterAgreegator } from "./core/entities/chapter";
@@ -18,6 +20,8 @@ import GetChaptersQuery from "./core/usecases/chapter/getChapters";
 import deleteCourseCommand from "./core/usecases/course/deleteCourse";
 import Content from "./core/entities/content";
 import addContentCommand from "./core/usecases/content/addContent";
+import DeleteChapterCommand from "./core/usecases/chapter/deleteChapter";
+import DeleteContentCommand from "./core/usecases/content/deleteContent";
 
 export default class CourseService {
   private courseRepository: CourseRepository;
@@ -88,6 +92,31 @@ export default class CourseService {
       return data;
     } else {
       throw new UnableToDeleteCourse("can't delete the course");
+    }
+  }
+
+  async deleteChapter(chapter: Chapter): Promise<Chapter> {
+    const command = new DeleteChapterCommand(chapter, this.chapterRepository);
+
+    if (await command.validate()) {
+      const data = await command.run();
+
+      return chapter;
+    } else {
+      throw new UnableToDeleteChapter("can't delete the chapter");
+    }
+  }
+
+  async deleteContent(content: Content): Promise<Content> {
+    const command = new DeleteContentCommand(content, this.contentRepository);
+
+    if (await command.validate()) {
+      const data = await command.run();
+
+      return content;
+    } else {
+      // todo: you should throw an error inside try catch
+      throw new UnableToDeleteContent("can't delete the Content");
     }
   }
 

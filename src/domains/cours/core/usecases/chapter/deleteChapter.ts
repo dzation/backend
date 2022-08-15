@@ -9,7 +9,7 @@ export default class DeleteChapterCommand extends UseCase {
 
   constructor(chapter: Chapter, repository: ChapterRepository) {
     super();
-    
+
     this.repository = repository;
     this.chapter = chapter;
   }
@@ -18,7 +18,8 @@ export default class DeleteChapterCommand extends UseCase {
     return true;
   }
 
-  async run(): Promise<any> {
-    this.repository.deleteChapter(this.chapter);
+  async run(): Promise<void> {
+    
+    await this.repository.deleteChapter(this.chapter);
   }
 }

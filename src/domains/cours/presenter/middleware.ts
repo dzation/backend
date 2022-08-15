@@ -166,7 +166,7 @@ export const validateValideContent: Middleware = async (req, res, next) => {
   const content = data.content as Content;
 
   if (!content.id) {
-    return no(res, "chapter id is missing");
+    return no(res, "content id is missing");
   }
 
   return validateContentBody(req, res, next);
