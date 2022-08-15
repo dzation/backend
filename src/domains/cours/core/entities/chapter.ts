@@ -1,10 +1,10 @@
 import Content from "./content";
 
-
-type Chapter = {
+export default interface Chapter {
   id: number;
   title: string;
-  content: Content[];
-};
+}
 
-export default Chapter;
+export interface ChaptorAgreegator extends Chapter {
+  content: Content[];
+}

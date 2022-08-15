@@ -1,11 +1,12 @@
 import Chapter from "./chapter";
 
-type Course = {
+export default interface Course {
   id: number;
   title: string;
   image: string;
   price: number;
-  chapters: Chapter[];
-};
+}
 
-export default Course;
+export interface CourseAgreegator extends Course {
+  chapters: Chapter[];
+}

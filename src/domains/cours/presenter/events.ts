@@ -6,7 +6,7 @@ import CourseService from "../service";
 type DispatchEvent =
   | {
       type: "ADD_CHAPTER";
-      payload: Chapter;
+      payload: { chapter: Chapter; course: Course };
     }
   | {
       type: "ADD_COURSE";
@@ -43,9 +43,12 @@ export default class Event {
   }
 
   private setUpEvents() {
-    Event.bus.listen("ADD_CHAPTER" + Event.sufix, (payload: Chapter) => {
-      // todo validate the payload
-      Event.serivce.addChapter(payload);
-    });
+    Event.bus.listen(
+      "ADD_CHAPTER" + Event.sufix,
+      (payload: { chapter: Chapter; course: Course }) => {
+        // todo validate the payload
+        Event.serivce.addChapter(payload.course, payload.chapter);
+      }
+    );
   }
 }

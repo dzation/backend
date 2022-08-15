@@ -6,3 +6,7 @@ class CoursError extends Error {
 }
 
 export class CourseNotFoundError extends CoursError {}
+
+export class UnableToAddCourse extends CoursError {}
+
+export class UnableToAddChapter extends CoursError {}

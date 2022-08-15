@@ -1,28 +1,30 @@
-
 import Course from "../core/entities/course";
 
 import Database from "@repositories/database";
+import Chapter from "../core/entities/chapter";
 
 export default class CourseRepository {
-  courses: Course[] = [];
+  chapters: Chapter[] = [];
   constructor(private Database: Database) {
-    this.courses = [];
+    this.chapters = [];
   }
 
-  async addCourse(course: Course): Promise<Course> {
-    this.courses.push(course);
-    return course;
+  async addChapter(course: Course, chapter: Chapter): Promise<Chapter> {
+    this.chapters.push(chapter);
+    return chapter;
   }
 
-  async getCourse(id: number): Promise<Course> {
-    const course = this.courses.find((c) => c.id === id);
-    if (course) {
-      return course;
+  async getChapter(id: number): Promise<Chapter> {
+    const chapter = this.chapters.find((c) => c.id === id);
+    if (chapter) {
+      return chapter;
     }
     throw new Error("Course not found");
   }
 
-  async getCourses(): Promise<Course[]> {
-    return this.courses;
+  async getchapters(course: Course): Promise<Chapter[]> {
+    return this.chapters;
   }
+
+  async deleteChapter(chapter: Chapter) {}
 }

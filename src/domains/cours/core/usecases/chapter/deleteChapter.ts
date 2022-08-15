@@ -1,14 +1,22 @@
-import UseCase from "../../../../../core/interfaces/usecase";
+import ChapterRepository from "../../../repositories/chapterRepository";
+
+import UseCase from "@core/interfaces/usecase";
 import Chapter from "../../entities/chapter";
 
-class DeleteChapterCommand implements UseCase {
+export default class DeleteChapterCommand implements UseCase {
   private chapter: Chapter;
-  constructor(chapter: Chapter) {
+  private repository: ChapterRepository;
+
+  constructor(chapter: Chapter, repository: ChapterRepository) {
+    this.repository = repository;
     this.chapter = chapter;
   }
-  validate(): Promise<boolean> {
-    throw new Error("Method not implemented.");
+
+  async validate(): Promise<boolean> {
+    return true;
   }
 
-  async run(): Promise<any> {}
+  async run(): Promise<any> {
+    this.repository.deleteChapter(this.chapter);
+  }
 }

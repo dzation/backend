@@ -1,27 +1,34 @@
-import UseCase from "../../../../../core/interfaces/usecase";
-import CourseRepository from "../../../repositories/courseRepository";
+import UseCase from "@core/interfaces/usecase";
+import ChapterRepository from "../../../repositories/chapterRepository";
 import Chapter from "../../entities/chapter";
 import Course from "../../entities/course";
 
-export default class AddChapterCommand<T extends any> implements UseCase {
+export default class AddChapterCommand implements UseCase {
   private chapter: Chapter;
-  private repository: CourseRepository;
+  private course: Course;
+  private repository: ChapterRepository;
 
-  constructor(chapter: Chapter, repository: CourseRepository) {
-    this.chapter = chapter;
+  constructor(
+    data: { chapter: Chapter; course: Course },
+    repository: ChapterRepository
+  ) {
+    this.chapter = data.chapter;
+    this.course = data.course;
+
     this.repository = repository;
   }
+
   async validate(): Promise<boolean> {
     try {
-      await this.repository.getCourse(this.chapter.id);
+      await this.repository.getChapter(this.chapter.id);
       return false;
-    } catch (_) {
-      return true;
-    }
+    } catch (_) {}
+
+    return true;
   }
 
   async run(): Promise<any> {
-    await this.repository.addCourse(this.chapter as any as Course);
+    await this.repository.addChapter(this.course, this.chapter);
   }
 }
 
@@ -36,7 +43,7 @@ Service that sum up all the useCases
 CourseService.init(Repo1,Repo2);
 CourseService.addCourse(courseData)
     final timer = Logger.timer("add new course");
-    const command =  new AddChapterCommand(courseData, CourseRepository)
+    const command =  new AddChapterCommand(courseData, ChapterRepository)
 
     
     if(command.validate()){
