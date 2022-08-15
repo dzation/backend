@@ -7,6 +7,6 @@ export default interface Course {
   price: number;
 }
 
-export interface CourseAgreegator extends Course {
-  chapters: Chapter[];
+export interface CourseAgreegator<T extends Chapter> extends Course {
+  chapters: T[];
 }

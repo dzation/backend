@@ -21,7 +21,22 @@ export default class CourseRepository {
     throw new Error("Course not found");
   }
 
+  async deleteCourse(course: Course) {}
+
   async getCourses(): Promise<Course[]> {
-    return this.courses;
+    return [
+      {
+        id: 44545,
+        image: "https://laknabil.me/nabil.png",
+        price: 15,
+        title: "Learning how to learn",
+      },
+      {
+        id: 44546,
+        image: "https://laknabil.me/nabil.png",
+        price: 30,
+        title: "Optical recognition",
+      },
+    ];
   }
 }

@@ -3,7 +3,7 @@ import Course from "../core/entities/course";
 import Database from "@repositories/database";
 import Chapter from "../core/entities/chapter";
 
-export default class CourseRepository {
+export default class ChapterRepository {
   chapters: Chapter[] = [];
   constructor(private Database: Database) {
     this.chapters = [];
@@ -23,7 +23,20 @@ export default class CourseRepository {
   }
 
   async getchapters(course: Course): Promise<Chapter[]> {
-    return this.chapters;
+    return [
+      {
+        id: 1,
+        title: "how memory works",
+      },
+      {
+        id: 2,
+        title: "what to remember",
+      },
+      {
+        id: 3,
+        title: "imagination vs logic",
+      },
+    ];
   }
 
   async deleteChapter(chapter: Chapter) {}

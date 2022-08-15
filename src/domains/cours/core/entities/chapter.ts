@@ -5,6 +5,6 @@ export default interface Chapter {
   title: string;
 }
 
-export interface ChaptorAgreegator extends Chapter {
+export interface ChapterAgreegator extends Chapter {
   content: Content[];
 }

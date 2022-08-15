@@ -2,22 +2,32 @@ import Database from "@repositories/database";
 import {
   CourseNotFoundError,
   UnableToAddChapter,
+  UnableToAddContent,
   UnableToAddCourse,
+  UnableToDeleteCourse,
 } from "./config/errors";
-import Chapter from "./core/entities/chapter";
+import Chapter, { ChapterAgreegator } from "./core/entities/chapter";
 import AddChapterCommand from "./core/usecases/chapter/addChapter";
 import CourseRepository from "./repositories/courseRepository";
 import ChapterRepository from "./repositories/chapterRepository";
-import Course from "./core/entities/course";
+import Course, { CourseAgreegator } from "./core/entities/course";
 import addCourseCommand from "./core/usecases/course/addCourse";
+import getCoursesQuery from "./core/usecases/course/getCourses";
+import ContentRepository from "./repositories/contentRepository";
+import GetChaptersQuery from "./core/usecases/chapter/getChapters";
+import deleteCourseCommand from "./core/usecases/course/deleteCourse";
+import Content from "./core/entities/content";
+import addContentCommand from "./core/usecases/content/addContent";
 
 export default class CourseService {
   private courseRepository: CourseRepository;
   private chapterRepository: ChapterRepository;
+  private contentRepository: ContentRepository;
 
   constructor(private database: Database) {
     this.courseRepository = new CourseRepository(this.database);
     this.chapterRepository = new ChapterRepository(this.database);
+    this.contentRepository = new ContentRepository(this.database);
   }
 
   async addChapter(course: Course, chapter: Chapter): Promise<Chapter> {
@@ -35,6 +45,21 @@ export default class CourseService {
     }
   }
 
+  async addContent(content: Content, chapter: Chapter): Promise<Content> {
+    const command = new addContentCommand(
+      { content, chapter },
+      this.contentRepository
+    );
+
+    if (await command.validate()) {
+      const data = await command.run();
+
+      return content;
+    } else {
+      throw new UnableToAddContent("Content already exists");
+    }
+  }
+
   async addCourse(course: Course): Promise<Course> {
     const command = new addCourseCommand({ course }, this.courseRepository);
 
@@ -45,5 +70,42 @@ export default class CourseService {
     } else {
       throw new UnableToAddCourse("Course already exists");
     }
+  }
+
+  async getCourses(): Promise<Course[]> {
+    const query = new getCoursesQuery(this.courseRepository);
+    const courses = await query.fetch();
+
+    return courses;
+  }
+
+  async deleteCourse(course: Course): Promise<Course> {
+    const command = new deleteCourseCommand({ course }, this.courseRepository);
+
+    if (await command.validate()) {
+      const data = await command.run();
+
+      return data;
+    } else {
+      throw new UnableToDeleteCourse("can't delete the course");
+    }
+  }
+
+  async getCourseChapters(
+    course: Course
+  ): Promise<CourseAgreegator<ChapterAgreegator>> {
+    const query = new GetChaptersQuery(course, {
+      repositories: {
+        chapter: this.chapterRepository,
+        content: this.contentRepository,
+      },
+    });
+
+    const chapters = await query.fetch();
+
+    return {
+      ...course,
+      chapters,
+    };
   }
 }

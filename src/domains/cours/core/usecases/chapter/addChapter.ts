@@ -1,9 +1,10 @@
+import { generateID } from "@core/helper";
 import UseCase from "@core/interfaces/usecase";
 import ChapterRepository from "../../../repositories/chapterRepository";
 import Chapter from "../../entities/chapter";
 import Course from "../../entities/course";
 
-export default class AddChapterCommand implements UseCase {
+export default class AddChapterCommand extends UseCase {
   private chapter: Chapter;
   private course: Course;
   private repository: ChapterRepository;
@@ -12,7 +13,13 @@ export default class AddChapterCommand implements UseCase {
     data: { chapter: Chapter; course: Course },
     repository: ChapterRepository
   ) {
-    this.chapter = data.chapter;
+    super();
+
+    this.chapter = {
+      ...data.chapter,
+      id: generateID(),
+    };
+
     this.course = data.course;
 
     this.repository = repository;

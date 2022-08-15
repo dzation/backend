@@ -1,4 +1,5 @@
 import EventEmitter from "events";
+import { generateID } from "./helper";
 
 export default class EventBus {
   private bus: EventEmitter;
@@ -8,7 +9,7 @@ export default class EventBus {
   }
 
   dispatch(eventName: string, data: any) {
-    const ID = Math.floor(Math.random() * 10000000);
+    const ID = generateID();
 
     this.bus.emit(eventName, {
       id: ID,
