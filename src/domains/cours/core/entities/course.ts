@@ -1,7 +1,8 @@
+import ID from "@core/entities/id";
 import Chapter from "./chapter";
 
 export default interface Course {
-  id: number;
+  id: ID;
   title: string;
   image: string;
   price: number;

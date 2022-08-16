@@ -1,6 +1,7 @@
 import Course from "../core/entities/course";
 
 import Database from "../../../repositories/database";
+import ID from "@core/entities/id";
 
 export default class CourseRepository {
   courses: Course[] = [];
@@ -13,8 +14,8 @@ export default class CourseRepository {
     return course;
   }
 
-  async getCourse(id: number): Promise<Course> {
-    const course = this.courses.find((c) => c.id === id);
+  async getCourse(id: ID): Promise<Course> {
+    const course = this.courses.find((c) => c.id.equals(id));
     if (course) {
       return course;
     }
@@ -26,13 +27,13 @@ export default class CourseRepository {
   async getCourses(): Promise<Course[]> {
     return [
       {
-        id: 44545,
+        id: ID.generate(),
         image: "https://laknabil.me/nabil.png",
         price: 15,
         title: "Learning how to learn",
       },
       {
-        id: 44546,
+        id: ID.generate(),
         image: "https://laknabil.me/nabil.png",
         price: 30,
         title: "Optical recognition",

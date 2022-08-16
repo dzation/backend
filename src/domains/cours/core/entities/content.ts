@@ -1,5 +1,7 @@
+import ID from "@core/entities/id";
+
 type Content = {
-  id: number;
+  id: ID;
   title: string;
   type: "PDF" | "VIDEO" | "AUDIO" | "IMAGE" | "LINK" | "ZOOM";
   url: string;

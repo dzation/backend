@@ -1,3 +1,4 @@
+import ID from "@core/entities/id";
 import { generateID } from "@core/helper";
 import UseCase from "@core/interfaces/usecase";
 import ContentRepository from "@domains/cours/repositories/contentRepository";
@@ -19,7 +20,7 @@ export default class addContentCommand extends UseCase {
 
     this.content = {
       ...data.content,
-      id: generateID(),
+      id: ID.generate(),
     };
 
     this.chapter = data.chapter;

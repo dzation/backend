@@ -1,7 +1,8 @@
+import ID from "@core/entities/id";
 import Content from "./content";
 
 export default interface Chapter {
-  id: number;
+  id: ID;
   title: string;
 }
 

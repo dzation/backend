@@ -3,6 +3,7 @@ import Course from "../core/entities/course";
 import Database from "@repositories/database";
 import Content from "../core/entities/content";
 import Chapter from "../core/entities/chapter";
+import ID from "@core/entities/id";
 
 export default class ContentRepository {
   contents: Content[] = [];
@@ -15,8 +16,8 @@ export default class ContentRepository {
     return chapter;
   }
 
-  async getContent(id: number): Promise<Content> {
-    const content = this.contents.find((c) => c.id === id);
+  async getContent(id: ID): Promise<Content> {
+    const content = this.contents.find((c) => c.id.equals(id));
     if (content) {
       return content;
     }
@@ -27,14 +28,14 @@ export default class ContentRepository {
     return [
       {
         freemium: true,
-        id: 156,
+        id: ID.generate(),
         title: "excercices",
         type: "PDF",
         url: "https://dzation.com/156",
       },
       {
         freemium: false,
-        id: 155,
+        id: ID.generate(),
         title: "correction",
         type: "PDF",
         url: "https://dzation.com/155",

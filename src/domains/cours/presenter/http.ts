@@ -1,5 +1,15 @@
 import HttpPresenter from "@core/interfaces/httpPresenter";
 import CourseService from "../service";
+
+import { Request, Response } from "express";
+import {
+  ChapterMapper,
+  ContentMapper,
+  CourseMapper,
+  FromChapter,
+  FromContent,
+  FromCourse,
+} from "./mappers";
 import {
   validateAddChapter,
   validateAddContent,
@@ -8,8 +18,6 @@ import {
   validateValideContent,
   validateValideCourse,
 } from "./middleware";
-
-import ENV from "@env";
 
 export default class Http extends HttpPresenter {
   private serivce: CourseService;
@@ -20,73 +28,120 @@ export default class Http extends HttpPresenter {
   }
 
   async setupRoutes() {
-    this.route.post("/addChapter", validateAddChapter, async (req, res) => {
-      const chapter = await this.serivce.addChapter(
-        req.body.course,
-        req.body.chapter
-      );
+    this.route.post(
+      "/addChapter",
+      validateAddChapter,
+      this.addChapter.bind(this)
+    );
 
-      res.json({ chapter });
-    });
+    this.route.post(
+      "/addCourse",
+      validateAddNewCourse,
+      this.addCourse.bind(this)
+    );
 
-    this.route.post("/addCourse", validateAddNewCourse, async (req, res) => {
-      const course = await this.serivce.addCourse(req.body.course);
-      res.json({ course });
-    });
+    this.route.get("/", this.getCourses.bind(this));
 
-    this.route.get("/", async (req, res) => {
-      const courses = await this.serivce.getCourses();
+    this.route.post(
+      "/chapters",
+      validateValideCourse,
+      this.getChapters.bind(this)
+    );
 
-      res.json({ courses });
-    });
+    this.route.post(
+      "/delete",
+      validateValideCourse,
+      this.deleteCourse.bind(this)
+    );
 
-    this.route.post("/chapters", validateValideCourse, async (req, res) => {
-      const courseAgreegated = await this.serivce.getCourseChapters(
-        req.body.course
-      );
-
-      res.json({ course: courseAgreegated });
-    });
-
-    this.route.post("/delete", validateValideCourse, async (req, res) => {
-      const deletedCourse = await this.serivce.deleteCourse(req.body.course);
-
-      res.json({ deleted: { course: deletedCourse } });
-    });
-
-    this.route.post("/addContent", validateAddContent, async (req, res) => {
-      const content = await this.serivce.addContent(
-        req.body.content,
-        req.body.chapter
-      );
-
-      res.json({ content });
-    });
+    this.route.post(
+      "/addContent",
+      validateAddContent,
+      this.addContent.bind(this)
+    );
 
     this.route.post(
       "/chapter/delete",
       validateValideChapter,
-      async (req, res) => {
-        const deletedChapter = await this.serivce.deleteChapter(
-          req.body.chapter
-        );
-
-        res.json({ deleted: { chapter: deletedChapter } });
-      }
+      this.deleteChapter.bind(this)
     );
 
     this.route.post(
       "/content/delete",
       validateValideContent,
-      async (req, res) => {
-        const deletedContent = await this.serivce.deleteContent(
-          req.body.content
-        );
-
-        res.json({ deleted: { content: deletedContent } });
-      }
+      this.deleteContent.bind(this)
     );
 
     return this.route;
+  }
+
+  private async getCourses(req: Request, res: Response) {
+    const courses = await this.serivce.getCourses();
+
+    res.json({ courses: courses.map(FromCourse) });
+  }
+
+  private async addCourse(req: Request, res: Response) {
+    const course = await this.serivce.addCourse(CourseMapper(req.body.course));
+    res.json({ course: FromCourse(course) });
+  }
+
+  private async deleteCourse(req: Request, res: Response) {
+    const deletedCourse = await this.serivce.deleteCourse(
+      CourseMapper(req.body.course)
+    );
+
+    res.json({ deleted: { course: FromCourse(deletedCourse) } });
+  }
+
+  private async deleteChapter(req: Request, res: Response) {
+    const deletedChapter = await this.serivce.deleteChapter(
+      ChapterMapper(req.body.chapter)
+    );
+
+    res.json({ deleted: { chapter: FromChapter(deletedChapter) } });
+  }
+
+  private async addChapter(req: Request, res: Response) {
+    const chapter = await this.serivce.addChapter(
+      CourseMapper(req.body.course),
+      ChapterMapper(req.body.chapter)
+    );
+
+    res.json({ chapter: FromChapter(chapter) });
+  }
+  private async getChapters(req: Request, res: Response) {
+    let courseAgreegated = await this.serivce.getCourseChapters(
+      CourseMapper(req.body.course)
+    );
+
+    res.json({
+      course: FromCourse({
+        ...courseAgreegated,
+        chapters: courseAgreegated.chapters.map((c) =>
+          FromChapter({
+            ...c,
+            content: c.content.map(FromContent),
+          } as any)
+        ),
+      } as any),
+    });
+  }
+
+  private async addContent(req: Request, res: Response) {
+    const content = await this.serivce.addContent(
+      ContentMapper(req.body.content),
+      ChapterMapper(req.body.chapter)
+    );
+
+    res.json({ content: FromContent(content) });
+  }
+
+  private async deleteContent(req: Request, res: Response) {
+    const deletedContent = await this.serivce.deleteContent(
+      ContentMapper(req.body.content)
+    );
+
+    res.json({ deleted: { content: FromContent(deletedContent) } });
   }
 }

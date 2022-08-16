@@ -1,3 +1,4 @@
+import ID from "@core/entities/id";
 import { Request, Response } from "express";
 import Chapter from "../core/entities/chapter";
 import Content from "../core/entities/content";
@@ -49,7 +50,7 @@ export const validateValideCourse: Middleware = async (req, res, next) => {
   const course = data.course as Course;
 
   // todo use helper to validate course id  & image
-  if (!course.id) {
+  if (!course.id || ID.validate(course.id.toString())) {
     return no(res, "Missing course id");
   }
 
@@ -97,7 +98,7 @@ export const validateValideChapter: Middleware = async (req, res, next) => {
 
   const chapter = data.chapter as Chapter;
 
-  if (!chapter.id) {
+  if (!chapter.id || ID.validate(chapter.id.toString())) {
     return no(res, "Missing chapter id");
   }
 
@@ -158,6 +159,7 @@ const validateContentBody: Middleware = async (req, res, next) => {
 
 export const validateValideContent: Middleware = async (req, res, next) => {
   const data = req.body;
+
   console.log(data);
   if (!data?.content) {
     return no(res, "Missing Content");
@@ -165,7 +167,7 @@ export const validateValideContent: Middleware = async (req, res, next) => {
 
   const content = data.content as Content;
 
-  if (!content.id) {
+  if (!content.id || !ID.validate(content.id.toString())) {
     return no(res, "content id is missing");
   }
 

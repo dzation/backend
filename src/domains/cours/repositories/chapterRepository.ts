@@ -2,6 +2,7 @@ import Course from "../core/entities/course";
 
 import Database from "@repositories/database";
 import Chapter from "../core/entities/chapter";
+import ID from "@core/entities/id";
 
 export default class ChapterRepository {
   chapters: Chapter[] = [];
@@ -14,7 +15,7 @@ export default class ChapterRepository {
     return chapter;
   }
 
-  async getChapter(id: number): Promise<Chapter> {
+  async getChapter(id: ID): Promise<Chapter> {
     const chapter = this.chapters.find((c) => c.id === id);
     if (chapter) {
       return chapter;
@@ -25,15 +26,15 @@ export default class ChapterRepository {
   async getchapters(course: Course): Promise<Chapter[]> {
     return [
       {
-        id: 1,
+        id: ID.generate(),
         title: "how memory works",
       },
       {
-        id: 2,
+        id: ID.generate(),
         title: "what to remember",
       },
       {
-        id: 3,
+        id: ID.generate(),
         title: "imagination vs logic",
       },
     ];
